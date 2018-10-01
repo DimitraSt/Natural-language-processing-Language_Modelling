@@ -1,2 +1,3 @@
-# anlp_cw1
-Character Level Language modeling
+# Accelerated Natural Language Processing Assignment 1: Language Modelling
+
+
