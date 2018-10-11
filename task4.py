@@ -45,8 +45,8 @@ def generate_from_LM(path, num_char=300):
     
     # Initial simbol for sequence
     sequence = '#' 
-
-    for i in range(num_char):
+    # generate -1 char as last char needs to be (.)
+    for i in range(num_char-1):
         # init generation by selecting P(*|##) distribution
         if i == 0: 
             distribution = get_distribution(model=LM, seq='##')
@@ -59,8 +59,8 @@ def generate_from_LM(path, num_char=300):
             new_char = get_char(distribution)
         sequence = sequence + new_char
     
-    # Add end of the sequence marker
-    sequence = sequence + '#'
+    # Add . and end of the sequence marker
+    sequence = sequence + '.#'
 
     return(sequence)
 
