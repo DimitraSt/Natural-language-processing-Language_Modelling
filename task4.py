@@ -54,8 +54,8 @@ def generate_from_LM(path, num_char=300):
             distribution = get_distribution(model=LM, seq=sequence[-2:])
 
         new_char = get_char(distribution)
-        # Prevent early termination by resampling
-        while new_char == '#':
+        # Prevent early termination by resampling (#) and (.)
+        while new_char == '#' or new_char == '.':
             new_char = get_char(distribution)
         sequence = sequence + new_char
     
