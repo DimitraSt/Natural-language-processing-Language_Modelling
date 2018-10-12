@@ -8,22 +8,67 @@ TASK6: Intrinsic language evaluation
    - This is efectively doing task 4 and 5 together
 """
 import sys
-from task5 import preplexity_seq
-from task4 import get_char, get_distribution
+import random
+from math import log
+"""
+Helper function to get distribution given the previous
+character set
+INPUT  - language model (dictionary),  sequence (2 char)
+OUTPUT - distribution given sequence
+"""
+def get_distribution(model, seq):
+    distribution = {}
+    for ngram in model.keys():
+        if ngram[:2] == seq:
+            distribution[ngram] = model[ngram]
+    return distribution
+"""
+Helper function to select the character given 
+the distribution of the charcters.
+inspired by:
+INPUT  - distribution
+OUTPUT - character
+"""
+def get_char(distribution):
+    tri = random.choices(
+            population=list(distribution.keys()),
+            weights=[float(v) for v in list(distribution.values())])
+    return tri[0][-1:]
+"""
+Helper function to estimate the perplexity
+of the sequence given the model.
+INPUT - Language model, sequence
+OUTPU - Preplexity
+"""
+def preplexity_seq(model, seq):
+
+    cross_entropy = 0
+    # '#' + seq := hack to have proper conditioning
+    for i in range(len('#' + seq)-(3)):
+        tri = seq[i:i+3]
+        cross_entropy += log(float(model[tri]))
+    cross_entropy = -1/ len(seq) * cross_entropy
+
+    return 2**cross_entropy
+
 
 def generate_word_from_LM(model):
     # Initialize word end start pointer to have
     # proper sequence generation
     word = '##'
-    # Generate sequence
+    # Generate first character
     while True:
 
-        distribution   = get_distribution(model=model, seq=word)
+        distribution   = get_distribution(model=model, seq=word[-2:])
         char = get_char(distribution = distribution)
         # Check if one of the word stoping characters were not generated
-        if char != ('#' or '.' or ' '):
+        if char not in ['#', '.', ' ']:
             word = word + char
-        # If generated, finish the sequence instead
+        # Do not allow one letter sequence (its not supported by this language
+        # Model
+        elif len(word) == 3:
+            word = '##'
+        # If finishe generated, finish the sequence
         else:
             word = word + '#'
             return word
@@ -34,17 +79,17 @@ if len(sys.argv) != 2:
     sys.exit(1)
 
 # Read Language model
-    LM = {}
-    with open('model/' + sys.argv[1]) as f:
-        for line in f:
-            elem = line.split('\t')
-            # Removing newline left in parsing
-            LM[elem[0]] = elem[1][:-1] 
-    
+LM = {}
+with open('model/' + sys.argv[1]) as f:
+    for line in f:
+        elem = line.split('\t')
+        # Removing newline left in parsing
+        LM[elem[0]] = elem[1][:-1]
+
 # Generate 100 words with the given language model and calculate their preplexities:
 
 with open('results/gen-perplexity' + sys.argv[1][-6:], 'w+') as f:
     for _ in range(0,101):
         word       = generate_word_from_LM(model=LM)
         perplexity = preplexity_seq(model=LM, seq=word)
-        f.write(word + '\t' + perplexity)
+        f.write(word[2:-1] + '\t' + str(perplexity) + '\n')

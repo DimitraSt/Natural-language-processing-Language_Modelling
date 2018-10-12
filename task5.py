@@ -44,7 +44,7 @@ def estimate_preplexity(path_to_data, path_to_model):
 
 # I/O : Provide the name of the language model
 if len(sys.argv) != 3:
-    print("Wrong number of input")
+    print("Wrong number of inputs")
     sys.exit(1)
 
 test_perplexity = estimate_preplexity(path_to_data=sys.argv[1], path_to_model=sys.argv[2])
