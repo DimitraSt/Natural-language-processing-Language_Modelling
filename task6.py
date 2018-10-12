@@ -40,18 +40,6 @@ of the sequence given the model.
 INPUT - Language model, sequence
 OUTPU - Preplexity
 """
-def preplexity_seq(model, seq):
-
-    cross_entropy = 0
-    # '#' + seq := hack to have proper conditioning
-    for i in range(len('#' + seq)-(3)):
-        tri = seq[i:i+3]
-        cross_entropy += log(float(model[tri]))
-    cross_entropy = -1/ len(seq) * cross_entropy
-
-    return 2**cross_entropy
-
-
 def generate_word_from_LM(model):
     # Initialize word end start pointer to have
     # proper sequence generation
@@ -66,7 +54,7 @@ def generate_word_from_LM(model):
             word = word + char
         # Do not allow one letter sequence (its not supported by this language
         # Model
-        elif len(word) == 3:
+        elif len(word) == 2:
             word = '##'
         # If finishe generated, finish the sequence
         else:
@@ -88,8 +76,7 @@ with open('model/' + sys.argv[1]) as f:
 
 # Generate 100 words with the given language model and calculate their preplexities:
 
-with open('results/gen-perplexity' + sys.argv[1][-6:], 'w+') as f:
+with open('results/words' + sys.argv[1][-6:], 'w+') as f:
     for _ in range(0,101):
         word       = generate_word_from_LM(model=LM)
-        perplexity = preplexity_seq(model=LM, seq=word)
-        f.write(word[2:-1] + '\t' + str(perplexity) + '\n')
+        f.write(word[2:-1] + '\n')

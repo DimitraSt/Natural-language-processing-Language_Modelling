@@ -4,7 +4,8 @@ TASK1: Estimate preplexity under the given
 language model
 """
 import sys
-from math import log
+from math import log2
+from math import pow
 from task1 import preprocess_line
 """
 Helper function to estimate the perplexity
@@ -18,8 +19,8 @@ def preplexity_seq(model, seq):
     # '#' + seq := hack to have proper conditioning
     for i in range(len('#' + seq)-(3)):
         tri = seq[i:i+3]
-        cross_entropy += log(float(model[tri]))
-    cross_entropy = -1/ len(seq) * cross_entropy
+        cross_entropy += log2(float(model[tri]))
+    cross_entropy = -1 / len(seq) * cross_entropy
 
     return 2**cross_entropy
 
@@ -35,12 +36,15 @@ def estimate_preplexity(path_to_data, path_to_model):
             LM[elem[0]] = elem[1][:-1] 
 
     with open('data/' + path_to_data) as f:
+        num = 0
         for line in f:
             line = preprocess_line(line)
             preplexity = preplexity_seq(model = LM, seq = line)
             total_perplexity += preplexity
+            num += 1
+        avg_perplexity = total_perplexity / num
 
-    return total_perplexity
+    return avg_perplexity
 
 # I/O : Provide the name of the language model
 if len(sys.argv) != 3:

@@ -1,1 +1,0 @@
-#des que a porde a queberengqlwh0yfwppwspeado enicidestbf a el ormtppxzidas for debrev a as y akgkjtvbxtropeo o comisweda insamen pormen ta comanda de haneta alio 00zferde un ajowldggios cursfros delectode una dadozxg al tacien la tamen y lgfwoigas sen culorar peantramodide esta per losin a ce exigo.#

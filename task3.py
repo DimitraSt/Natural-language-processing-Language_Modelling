@@ -21,11 +21,12 @@ tri_counts = defaultdict(int)
 tri_prob   = {}
 
 # I/O : Provide the name of the training file
-if len(sys.argv) != 2:
-    print("Usage: ", sys.argv[0], "<training_file>")
+if len(sys.argv) != 3:
+    print("Wrong number of arguments")
     sys.exit(1)
 
 infile = sys.argv[1] 
+alpha  = float(sys.argv[2])
 
 # STEP 1: Read the file and obtain the count of triples
 with open('data/' + infile) as f:
@@ -66,12 +67,12 @@ for tri in sorted(tri_counts.keys()):
     # Else: obtained all counts for distribution
     # Can estimate and clean common_two
     else:
-        prob = estimate_distribution(counts=common_two)
+        prob = estimate_distribution(counts=common_two, alpha=alpha)
         tri_prob.update(prob)
         common_two = {tri: tri_counts[tri]}
 
 # Extra for last common_two
-prob = estimate_distribution(counts=common_two)
+prob = estimate_distribution(counts=common_two,alpha=alpha)
 tri_prob.update(prob)
 
 # STEP 3: Save estimate to the file

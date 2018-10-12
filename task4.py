@@ -40,7 +40,7 @@ def generate_from_LM(path, num_char=300):
     with open('model/' + path) as f:
         for line in f:
             elem = line.split('\t')
-            # Removing newline left in parsing
+            # Removing newtheline left in parsing
             LM[elem[0]] = elem[1][:-1] 
     
     # Initial simbol for sequence
