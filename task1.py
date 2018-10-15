@@ -17,6 +17,12 @@ def preprocess_line(line):
     special = [' ', '.']                    
     digits = [chr(i)for i in range(48, 58)]  # [0-9]
     previous_char = "" # marker for double space problem
+    # One character line problem
+    # treat as just extra estimate
+    # for P(*|##)
+    if len(line) == 2:
+        return '##'+line[0]
+        print('success')
     for character in line:
         if character in upper:
             newline.append(character.lower())

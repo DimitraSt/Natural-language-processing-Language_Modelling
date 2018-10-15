@@ -64,7 +64,27 @@ def generate_from_LM(path, num_char=300):
 
     return(sequence)
 
+def generate_word_from_LM(model):
+    # Initialize word end start pointer to have
+    # proper sequence generation
+    word = '##'
+    # Generate first character
+    while True:
 
+        distribution   = get_distribution(model=model, seq=word[-2:])
+        char = get_char(distribution = distribution)
+        # Check if one of the word stoping characters were not generated
+        if char not in ['#', '.', ' ']:
+            word = word + char
+        # Do not allow one letter sequence (its not supported by this language
+        # Model
+        elif len(word) == 2:
+            word = '##'
+        # If finishe generated, finish the sequence
+        else:
+            word = word + '#'
+            return word
+            
 # I/O : Provide the name of the language model
 if len(sys.argv) != 2:
     print('Wrong number of arguments')
