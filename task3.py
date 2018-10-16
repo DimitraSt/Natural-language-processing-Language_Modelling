@@ -7,6 +7,7 @@ N = 30 (26 letters + # + . + space)
 from task1 import preprocess_line
 import sys
 from collections import defaultdict
+from random import shuffle
 from math import log2
 
 
@@ -96,22 +97,26 @@ def final_model(path, alpha=1):
 
 def validate_model(path, alpha=1, k=5):
 
-    folds = []
-    fold  = []
-    file_size = len(open('data/' + path).readlines())
+    data = []
     with open('data/' + path) as f:
         for line in f:
             line = preprocess_line(line)
-            # Single char per line problem
-            fold.append(line)
-            # check if you finished the fold
-            if len(fold) == file_size/k:
-                # add fold to folds
-                folds.append(fold)
-                fold = []
-        # Extra processing for the last fold 
-        # if it is not divisible by k
-        folds.append(fold)
+            data.append(line)
+
+    # Perform random shuffle of data
+    shuffle(data)
+    
+    folds = []
+    fold  = []
+    for item in data:
+        fold.append(item)
+        # check if you finished the fold
+        if len(fold) == len(data)/k:
+            folds.append(fold)
+            fold = []
+    # Extra processing for the last fold 
+    # if it is not divisible by k
+    folds.append(fold)
 
     ## Prepexity list
     pps = []
@@ -155,7 +160,26 @@ if len(sys.argv) != 2:
 infile = sys.argv[1] 
 
 # define possible alpha values to test
-alphas = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1]
+# ENGLISH
+# alphas = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1]
+# alphas = [0.50, 0.51, 0.52, 0.53, 0.54, 0.55, 0.56, 0.57, 0.58, 0.59]
+# alphas   = [0.530, 0.531, 0.532, 0.533, 0.534, 0.534, 0.535, 0.536, 0.537, 0.538, 0.539]
+# Best_alpha = 0.530
+
+# SPANISH
+# alphas = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1]
+# alphas = [0.70,0.71, 0.72, 0.73,0.74,0.75,0.76,0.77, 0.78,0.79]
+# alphas =[0.720,0.721,0.722,0.723,0.724,0.725,0.726,0.727,0.728,0.729]
+# Best_alpha = 0.723
+
+# GERMAN
+# alphas = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1]
+# alphas = [0.70,0.71, 0.72, 0.73,0.74,0.75,0.76,0.77, 0.78,0.79]
+# alphas = [0.700, 0.701, 0.702,0.703,0.704,0.705,0.706,0.707,0.708,0.709]
+# Best_alpha = 0.700
+
+
+
 
 best_model, best_pp = validate_model(path=infile, alpha=0.1)
 best_alpha = 0.1
@@ -163,7 +187,7 @@ best_alpha = 0.1
 for alpha in alphas:
 
     model, pp = validate_model(path=infile, alpha=alpha)
-    print("model alpha = " + str(alpha) + "pp: " + str(pp))
+    print("model alpha = " + str(alpha) + " pp: " + str(pp))
 
     if pp < best_pp:
         best_pp = pp
